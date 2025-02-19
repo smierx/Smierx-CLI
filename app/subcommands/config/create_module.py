@@ -1,9 +1,7 @@
+from app.subcommands.helper import prints
+from app.core.config import settings
 import typer
 
-
-app = typer.Typer()
-
-@app.command()
-def test():
-    print("Test")
+def create():
+    prints.pprint(settings.VERSION_CONFIG)
 
