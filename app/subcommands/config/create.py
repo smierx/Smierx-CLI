@@ -1,6 +1,8 @@
 import typer
 from app.subcommands.config import create_module
-from app.subcommands.helper import prints
+from app.helper import prints,ids
+from app.schemas.modules import Module,Submodule
+
 app = typer.Typer()
 
 @app.command()
