@@ -25,8 +25,6 @@ def create(module: Module):
         f.write(f"# {module.name}\n")
         f.write("## Beschreibung\n")
 
-def create():
-    prints.pprint(settings.VERSION_CONFIG)
 
 def create_submodules(module_identifier:str,module_name:str,module_semester:str,path: str, submodules: list[Submodule]):
     tmp_paths = []
