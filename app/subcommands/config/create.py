@@ -35,7 +35,29 @@ def create(
 
     if module:
         if not name:
-            prints.pprint("Error: --module requires a name as first argument.")
+            name = typer.prompt("Enter module name")
+
+        module = Module(name=name, semester=ids.get_semester_str(timestamp))
+
+        if exam_format:
+            module.exam_format = typer.prompt("Enter exam format")
+
+
+        number_of_submodules = get_valid_number(0,1,"Submodules") if not number_of_submodules else number_of_submodules
+        submodules = []
+        counter = 1
+        for i in range(int(number_of_submodules)):
+            tmp_name = typer.prompt("Enter submodule name")
+            submodules.append(Submodule(name=tmp_name,module_identifier=module.identifier,order=counter))
+            counter += 1
+        module.submodules = submodules
+
+
+        prints.pprint(module.model_dump_json(indent=2))
+        confirm = typer.confirm("Do you want to create a new module?")
+        if not confirm:
+            typer.echo("Module creation aborted.")
             raise typer.Exit()
-        create_module.create()
+        #TODO Check if Name existiert mit semester kombi
+        create_module.create(module)
 
