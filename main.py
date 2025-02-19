@@ -1,5 +1,5 @@
 import typer
-from app.subcommands import config_router
+from app.subcommands import config_router,view_router
 
 
 app = typer.Typer()
