@@ -1,6 +1,6 @@
 import typer
 import os
-from app.subcommands import helper
+from app.subcommands.archiv import helper
 from app.core.config import settings
 import csv
 
@@ -23,7 +23,7 @@ def checks():
 @app.command()
 def create_lecture_csv(lecture: str, date=datetime.date.today().strftime("%Y-%m-%d"),subtitle="Subtitle"):
     helper.check_lectures()
-    if (lecture :=helper.check_lecture_or_token(lecture)) == "":
+    if (lecture := helper.check_lecture_or_token(lecture)) == "":
         return
     with open(f"{settings.BASE_PATH}/{settings.TEMPLATE_REL_PATH}/{settings.TEMPLATE_CSV}","r") as file:
         reader = csv.reader(file,delimiter=";")
