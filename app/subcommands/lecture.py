@@ -4,36 +4,16 @@ from app.subcommands import helper
 from app.core.config import settings
 import csv
 
-import frontmatter
 import datetime
-
 
 app = typer.Typer()
 
-
-@app.command()
-def main(command: str,sure=False):
-    if command=="test":
-        print("Das ist der Test")
-    elif command=="fix-lectures":
-        if sure:
-            for tmp_path in helper._get_lectures():
-                with open(tmp_path,"r") as file:
-                    tmp_data = frontmatter.load(file)
-
-                tmp_data["token"] = ""
-
-                with open(tmp_path,"w") as file:
-                    file.write(frontmatter.dumps(tmp_data))
-    else:
-        print("hello world")
-
 @app.command()
 def find_lectures():
-    for tmp_path in helper._get_lectures():
+    for tmp_path in helper.get_lectures():
         print(tmp_path)
-
-
+    print("-----")
+    return helper.get_lectures()
 
 @app.command()
 def checks():
@@ -43,7 +23,7 @@ def checks():
 @app.command()
 def create_lecture_csv(lecture: str, date=datetime.date.today().strftime("%Y-%m-%d"),subtitle="Subtitle"):
     helper.check_lectures()
-    if (lecture :=helper._check_lecture_or_token(lecture)) == "":
+    if (lecture :=helper.check_lecture_or_token(lecture)) == "":
         return
     with open(f"{settings.BASE_PATH}/{settings.TEMPLATE_REL_PATH}/{settings.TEMPLATE_CSV}","r") as file:
         reader = csv.reader(file,delimiter=";")
@@ -73,7 +53,7 @@ def create_lecture_csv(lecture: str, date=datetime.date.today().strftime("%Y-%m-
 @app.command()
 def transfer_csv_to_md(lecture: str):
     helper.check_lectures()
-    if (lecture := helper._check_lecture_or_token(lecture)) == "":
+    if (lecture := helper.check_lecture_or_token(lecture)) == "":
         return
 
     files = [x for x in os.listdir(f"{settings.BASE_PATH}/{settings.TABLES_REL_PATH}/") if lecture in x]

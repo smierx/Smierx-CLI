@@ -3,20 +3,20 @@ import frontmatter
 from app.core.config import settings
 import os
 
-def _get_lectures():
+def get_lectures():
     return [f"{settings.BASE_PATH}/{settings.LECTURE_REL_PATH}/{x}" for x in os.listdir(f"{settings.BASE_PATH}/{settings.LECTURE_REL_PATH}") if x.endswith(".md")]
 
-def _get_lecture_titles():
-    return [x.split("/")[-1].split(".md")[0] for x in _get_lectures()]
+def get_lecture_titles():
+    return [x.split("/")[-1].split(".md")[0] for x in get_lectures()]
 
-def _get_lecture_titles_and_token():
+def get_lecture_titles_and_token():
     data = []
-    lectures = _get_lectures()
+    lectures = get_lectures()
     files = []
     tokens = []
     for x in lectures:
         tmp_file_title = x.split("/")[-1].split(".md")[0]
-        with open(x,"r") as file:
+        with open(x,"r",encoding="utf-8") as file:
             tmp_data = frontmatter.load(file)
         tmp_token = tmp_data["token"]
         files.append(tmp_file_title)
@@ -28,8 +28,8 @@ def _get_lecture_titles_and_token():
 
 def check_lectures():
     tokens = []
-    for tmp_path in _get_lectures():
-        with open(tmp_path,"r") as file:
+    for tmp_path in get_lectures():
+        with open(tmp_path,"r",encoding="utf-8") as file:
             tmp_data = frontmatter.load(file)
         assert "Subject" in tmp_data.metadata, tmp_path.split("/")[-1]
         assert str(tmp_data["Subject"]).startswith("[["),tmp_path.split("/")[-1]
@@ -37,12 +37,12 @@ def check_lectures():
         if tmp_data["token"] != "":
             assert tmp_data["token"] not in tokens,tmp_path.split("/")[-1]
             tokens.append(str(tmp_data["token"]))
-    print("Alle Tests erfolgreich!")
+    return True
 
 
 
-def _check_lecture_or_token(lec_tok:str):
-    data = _get_lecture_titles_and_token()
+def check_lecture_or_token(lec_tok:str):
+    data = get_lecture_titles_and_token()
     if (lec_tok not in data[0]) and (lec_tok not in data[1]):
         return ""
     flag = (0,1) if lec_tok in data[0] else (1,0)
